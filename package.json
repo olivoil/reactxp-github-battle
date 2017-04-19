@@ -1,0 +1,36 @@
+{
+  "name": "rxp-github-battle",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/bundle.js",
+  "scripts": {
+    "web-watch": "webpack --progress --colors --watch",
+    "rn-watch": "tsc --watch",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "web": "opn index.html",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.12",
+    "@types/webpack": "^2.2.14",
+    "awesome-typescript-loader": "3.1.2",
+    "file-loader": "^0.11.1",
+    "opn-cli": "^3.1.0",
+    "source-map-loader": "^0.1.6",
+    "ts-node": "^3.0.2",
+    "typescript": "2.1.6",
+    "url-loader": "^0.5.8",
+    "webpack": "2.2.1"
+  },
+  "dependencies": {
+    "immutable": "master",
+    "react": "15.5.3",
+    "react-addons-perf": "15.5.0-rc.2",
+    "react-addons-test-utils": "15.5.1",
+    "react-dom": "15.5.3",
+    "react-native": "0.42.3",
+    "react-native-windows": "^0.33.0",
+    "reactxp": "0.42.0-rc.1"
+  }
+}
