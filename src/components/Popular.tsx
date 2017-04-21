@@ -1,4 +1,3 @@
-
 import * as RX from "reactxp";
 import {
 	Component,
@@ -8,7 +7,7 @@ import {
 	View,
 } from "reactxp";
 import { Record } from "immutable";
-// import { fetchPopularRepos } from "services/github";
+import { fetchPopularRepos } from "services/github";
 
 const textStyle: Partial<Types.TextStyle> = {
 	fontFamily: "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
@@ -36,8 +35,6 @@ const styles = {
 		color: "#d0021b",
 	})
 }
-
-// type Language = "All" | "Typescript" | "Javascript" | "Go" | "Rust" | "Elixir";
 
 interface SelectLanguageProps {
 	selectedLanguage: Language;
@@ -81,6 +78,10 @@ export class Popular extends Component<null, PopularState> {
 				selectedLanguage: "All",
 			}))
 		};
+	}
+
+	componentDidMount() {
+		fetchPopularRepos(this.state.record.get("selectedLanguage")).then((repos) => console.log(repos));
 	}
 
 	updateLanguage(lang: Language) {
