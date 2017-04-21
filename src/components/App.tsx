@@ -7,7 +7,7 @@ import {
 	View,
 } from "reactxp";
 
-import { Popular } from "./Popular";
+import { Popular } from "components/popular";
 
 const styles = {
 	container: Styles.createViewStyle({

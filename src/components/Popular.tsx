@@ -8,6 +8,7 @@ import {
 	View,
 } from "reactxp";
 import { Record } from "immutable";
+// import { fetchPopularRepos } from "services/github";
 
 const textStyle: Partial<Types.TextStyle> = {
 	fontFamily: "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
@@ -36,7 +37,32 @@ const styles = {
 	})
 }
 
-type Language = "All" | "Typescript" | "Javascript" | "Go" | "Rust" | "Elixir";
+// type Language = "All" | "Typescript" | "Javascript" | "Go" | "Rust" | "Elixir";
+
+interface SelectLanguageProps {
+	selectedLanguage: Language;
+	onSelect: (lang: Language) => void;
+}
+
+class SelectLanguage extends Component<SelectLanguageProps, null> {
+	render() {
+		const langs: string[] = ["All", "Typescript", "Javascript", "Go", "Rust", "Elixir"];
+
+		return (
+			<View style={styles.list}>
+				{
+					langs.map((l) => {
+						return (
+							<View style={styles.item} key={l} onPress={this.props.onSelect.bind(null, l)}>
+								<Text style={l === this.props.selectedLanguage ? styles.selectedText : styles.text}>{l}</Text>
+							</View>
+						)
+					})
+				}
+			</View>
+		);
+	}
+}
 
 interface IPopularState {
 	selectedLanguage: Language;
@@ -66,19 +92,13 @@ export class Popular extends Component<null, PopularState> {
 	render() {
 		const langs: string[] = ["All", "Typescript", "Javascript", "Go", "Rust", "Elixir"];
 		const selectedLanguage = this.state.record.get("selectedLanguage");
+		const updateLanguage = this.updateLanguage.bind(this);
 
 		return (
-			<View style={styles.list}>
-				{
-					langs.map((l) => {
-						return (
-							<View style={styles.item} key={l} onPress={this.updateLanguage.bind(this, l)}>
-								<Text style={l === selectedLanguage ? styles.selectedText : styles.text}>{l}</Text>
-							</View>
-						)
-					})
-				}
-			</View>
+			<SelectLanguage
+				selectedLanguage={this.state.record.get("selectedLanguage")}
+				onSelect={updateLanguage}
+			/>
 		)
 	}
 }

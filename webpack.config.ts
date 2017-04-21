@@ -1,9 +1,16 @@
-import * as webpack from 'webpack';
+
+import * as webpack from "webpack";
+import * as path from "path";
+import * as ext from "webpack-node-externals";
+
+const env = process.env.WEBPACK_ENV;
+const native = env === "native";
+const web = env === "web";
 
 const config: webpack.Configuration = {
 	entry: "./src/index.tsx",
 	output: {
-		filename: "bundle.js",
+		filename: `${env}.js`,
 		path: __dirname + "/dist"
 	},
 
@@ -12,8 +19,11 @@ const config: webpack.Configuration = {
 
 	resolve: {
 		// Add '.ts' and '.tsx' as resolvable extensions.
-		extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+		extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+		modules: [path.resolve(__dirname, "src"), "node_modules"]
 	},
+
+	externals: native ? [ext()] : [],
 
 	module: {
 		rules: [
