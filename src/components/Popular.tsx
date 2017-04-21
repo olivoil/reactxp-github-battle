@@ -1,9 +1,12 @@
 import * as RX from "reactxp";
 import {
 	Component,
+	Image,
+	Link,
 	Styles,
 	Text,
 	Types,
+	UserInterface,
 	View,
 } from "reactxp";
 import { Record } from "immutable";
@@ -16,6 +19,10 @@ const textStyle: Partial<Types.TextStyle> = {
 }
 
 const styles = {
+	container: Styles.createViewStyle({
+		alignItems: "center",
+		justifyContent: "center",
+	}),
 	list: Styles.createViewStyle({
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -33,7 +40,70 @@ const styles = {
 	selectedText: Styles.createTextStyle({
 		...textStyle,
 		color: "#d0021b",
-	})
+	}),
+	repoGrid: Styles.createViewStyle({
+		flexDirection: "row",
+		flexWrap: "wrap",
+		justifyContent: "space-around",
+		minWidth: UserInterface.measureWindow().width,
+	}),
+	repo: Styles.createViewStyle({
+		margin: 20,
+		minWidth: 100,
+		maxWidth: 150,
+		justifyContent: "center",
+		alignItems: "center",
+		overflow: "visible",
+	}),
+	repoText: Styles.createTextStyle({
+		textAlign: "center",
+		maxHeight: 20,
+		minWidth: 200,
+		maxWidth: 200,
+		overflow: "visible",
+	}),
+	repoItems: Styles.createViewStyle({
+		marginBottom: 7,
+		justifyContent: "center",
+		overflow: "visible",
+		alignItems: "center",
+	}),
+	repoImage: Styles.createImageStyle({
+		width: 150,
+		height: 150,
+		borderRadius: 75,
+	}),
+}
+
+interface RepoGridProps {
+	repos: Repo[];
+}
+
+class RepoGrid extends Component<RepoGridProps, null> {
+	render() {
+		return (
+			<View style={styles.repoGrid}>
+				{this.props.repos.map((repo, index) => {
+					return (
+						<View key={repo.name} style={styles.repo}>
+							<Text style={styles.repoText}>#{index + 1}</Text>
+							<View style={styles.repoItems}>
+								<Image
+									style={styles.repoImage}
+									source={repo.owner.avatar_url}
+									title={repo.owner.login}
+									resizeMode="stretch"
+									resizeMethod="scale" />
+								<Link style={styles.repoText} url={repo.html_url}>{repo.name}</Link>
+								<Text style={styles.repoText}>@{repo.owner.login}</Text>
+								<Text style={styles.repoText}>{repo.stargazers_count} stars</Text>
+					 		</View> 
+						</View>
+					)
+				})}
+			</View>
+		)
+	}
 }
 
 interface SelectLanguageProps {
@@ -63,6 +133,7 @@ class SelectLanguage extends Component<SelectLanguageProps, null> {
 
 interface IPopularState {
 	selectedLanguage: Language;
+	repos: Repo[];
 }
 
 interface PopularState {
@@ -76,18 +147,25 @@ export class Popular extends Component<null, PopularState> {
 		this.state = {
 			record: new (Record<IPopularState>({
 				selectedLanguage: "All",
+				repos: [],
 			}))
 		};
 	}
 
 	componentDidMount() {
-		fetchPopularRepos(this.state.record.get("selectedLanguage")).then((repos) => console.log(repos));
+		this.updateLanguage(this.state.record.get("selectedLanguage"));
 	}
 
 	updateLanguage(lang: Language) {
 		this.setState(({ record }) => ({
-			record: record.update("selectedLanguage", (l) => lang)
-		}))
+			record: record.update("selectedLanguage", (l) => lang).update("repos", (r) => [])
+		}));
+
+		fetchPopularRepos(lang).then((repos) => {
+			this.setState(({ record }) => ({
+				record: record.update("repos", (r) => repos)
+			}));
+		});
 	}
 
 	render() {
@@ -96,10 +174,16 @@ export class Popular extends Component<null, PopularState> {
 		const updateLanguage = this.updateLanguage.bind(this);
 
 		return (
-			<SelectLanguage
-				selectedLanguage={this.state.record.get("selectedLanguage")}
-				onSelect={updateLanguage}
-			/>
+			<View style={styles.container}>
+				<SelectLanguage
+					selectedLanguage={this.state.record.get("selectedLanguage")}
+					onSelect={updateLanguage}
+				/>
+
+				<RepoGrid
+					repos={this.state.record.get("repos")}
+				/>
+			</View>
 		)
 	}
 }

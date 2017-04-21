@@ -7,7 +7,7 @@
     "watch": "concurrently \"npm run web-watch\" \"npm run rn-watch\"",
     "web-watch": "cross-env WEBPACK_ENV=web webpack --progress --colors --watch",
     "rn-watch": "cross-env WEBPACK_ENV=native webpack --progress --colors --watch",
-	"web-serve": "cross-env WEBPACK_ENV=web webpack-dev-server --hot",
+	"web-serve": "cross-env WEBPACK_ENV=web webpack-dev-server --progress --colors --inline --hot --open",
     "rn-serve": "node node_modules/react-native/local-cli/cli.js start",
     "web": "opn index.html",
     "android": "react-native run-android",

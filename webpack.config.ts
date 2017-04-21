@@ -34,7 +34,11 @@ const config: webpack.Configuration = {
 			{ test: /\.(woff|woff2)$/, use: "url-loader?limit=10000&mimetype=application/font-woff" },
 			{ test: /\.ttf$/, use: "url-loader?limit=10000&mimetype=application/octet-stream" },
 		]
-	}
+	},
+
+	plugins: [
+		new webpack.NamedModulesPlugin()
+	]
 };
 
 export default config;
