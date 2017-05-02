@@ -1,11 +1,5 @@
-
 import * as RX from "reactxp";
-import {
-	Component,
-	Styles,
-	Text,
-	View,
-} from "reactxp";
+import { Component, Styles, Text, View } from "reactxp";
 
 import { Popular } from "components/popular";
 
@@ -18,7 +12,7 @@ const styles = {
 	}),
 };
 
-export class App extends Component<null, null> {
+export class App extends Component<{}, {}> {
 	render() {
 		return (
 			<View style={styles.container}>

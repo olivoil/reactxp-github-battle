@@ -4,10 +4,11 @@
   "private": true,
   "main": "dist/bundle.js",
   "scripts": {
+    "fmt": "prettier --use-tabs true --tab-width 4 --single-quote false --parser typescript --semi true --trailing-comma es5 --jsx-bracket-same-line true --write src/**/*.{ts,tsx}",
     "watch": "concurrently \"npm run web-watch\" \"npm run rn-watch\"",
     "web-watch": "cross-env WEBPACK_ENV=web webpack --progress --colors --watch",
     "rn-watch": "cross-env WEBPACK_ENV=native webpack --progress --colors --watch",
-	"web-serve": "cross-env WEBPACK_ENV=web webpack-dev-server --progress --colors --inline --hot --open",
+    "web-serve": "cross-env WEBPACK_ENV=web webpack-dev-server --progress --colors --inline --hot --open",
     "rn-serve": "node node_modules/react-native/local-cli/cli.js start",
     "web": "opn index.html",
     "android": "react-native run-android",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/core-js": "^0.9.41",
+    "@types/lodash": "^4.14.63",
     "@types/node": "^7.0.12",
     "@types/webpack": "^2.2.14",
     "awesome-typescript-loader": "3.1.2",
@@ -23,9 +25,11 @@
     "cross-env": "^4.0.0",
     "file-loader": "^0.11.1",
     "opn-cli": "^3.1.0",
+    "prettier": "^1.2.2",
     "source-map-loader": "^0.1.6",
     "ts-node": "^3.0.2",
-    "typescript": "2.1.6",
+    "typescript": "^2.3.2",
+    "typescript-eslint-parser": "^2.1.0",
     "url-loader": "^0.5.8",
     "webpack": "2.2.1",
     "webpack-dev-server": "^2.4.2",
@@ -41,6 +45,7 @@
     "react-dom": "15.5.3",
     "react-native": "0.42.3",
     "react-native-windows": "^0.33.0",
-    "reactxp": "0.42.0-rc.1"
+    "reactxp": "0.42.0-rc.1",
+    "resub": "^0.0.13"
   }
 }

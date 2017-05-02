@@ -14,7 +14,8 @@
 		"sourceMap": true,
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
-		"outDir": "./dist/",
+		"outDir": "dist",
+		"preserveConstEnums": true,
 		"types": [
 			"node"
 		],

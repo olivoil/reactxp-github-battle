@@ -9,7 +9,12 @@ import {
 	UserInterface,
 	View,
 } from "reactxp";
-import { Record } from "immutable";
+
+import {
+	ComponentBase,
+} from "resub";
+
+import { repoStore } from "stores/repostore";
 import { fetchPopularRepos } from "services/github";
 
 const textStyle: Partial<Types.TextStyle> = {
@@ -76,10 +81,10 @@ const styles = {
 }
 
 interface RepoGridProps {
-	repos: Repo[];
+	readonly repos: ReadonlyArray<Repo>;
 }
 
-class RepoGrid extends Component<RepoGridProps, null> {
+class RepoGrid extends Component<RepoGridProps, {}> {
 	render() {
 		return (
 			<View style={styles.repoGrid}>
@@ -107,11 +112,11 @@ class RepoGrid extends Component<RepoGridProps, null> {
 }
 
 interface SelectLanguageProps {
-	selectedLanguage: Language;
-	onSelect: (lang: Language) => void;
+	readonly selectedLanguage: Language;
+	readonly onSelect: (lang: Language) => void;
 }
 
-class SelectLanguage extends Component<SelectLanguageProps, null> {
+class SelectLanguage extends Component<SelectLanguageProps, {}> {
 	render() {
 		const langs: string[] = ["All", "Typescript", "Javascript", "Go", "Rust", "Elixir"];
 
@@ -131,58 +136,42 @@ class SelectLanguage extends Component<SelectLanguageProps, null> {
 	}
 }
 
-interface IPopularState {
-	selectedLanguage: Language;
-	repos: Repo[];
-}
-
 interface PopularState {
-	record: Record.Instance<IPopularState>;
+	readonly selectedLanguage: Language;
+	readonly repos: ReadonlyArray<Repo>;
 }
 
-export class Popular extends Component<null, PopularState> {
-	constructor() {
-		super();
-
-		this.state = {
-			record: new (Record<IPopularState>({
-				selectedLanguage: "All",
-				repos: [],
-			}))
+export class Popular extends ComponentBase<{}, PopularState> {
+	protected _buildState(props: {}, initialBuild: boolean): Partial<PopularState> {
+		return {
+			selectedLanguage: repoStore.getLanguage(),
+			repos: repoStore.getRepos(),
 		};
 	}
 
-	componentDidMount() {
-		this.updateLanguage(this.state.record.get("selectedLanguage"));
-	}
-
-	updateLanguage(lang: Language) {
-		this.setState(({ record }) => ({
-			record: record.update("selectedLanguage", (l) => lang).update("repos", (r) => [])
-		}));
+	private _updateLanguage(lang: Language) {
+		repoStore.updateLanguage(lang);
 
 		fetchPopularRepos(lang).then((repos) => {
-			this.setState(({ record }) => ({
-				record: record.update("repos", (r) => repos)
-			}));
+			repoStore.setRepos(repos);
 		});
 	}
 
-	render() {
+	public componentDidMount() {
+		this._updateLanguage(this.state.selectedLanguage);
+	}
+
+	public render() {
 		const langs: string[] = ["All", "Typescript", "Javascript", "Go", "Rust", "Elixir"];
-		const selectedLanguage = this.state.record.get("selectedLanguage");
-		const updateLanguage = this.updateLanguage.bind(this);
 
 		return (
 			<View style={styles.container}>
 				<SelectLanguage
-					selectedLanguage={this.state.record.get("selectedLanguage")}
-					onSelect={updateLanguage}
+					selectedLanguage={this.state.selectedLanguage}
+					onSelect={this._updateLanguage.bind(this)}
 				/>
 
-				<RepoGrid
-					repos={this.state.record.get("repos")}
-				/>
+				<RepoGrid repos={this.state.repos} />
 			</View>
 		)
 	}
