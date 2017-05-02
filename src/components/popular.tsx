@@ -149,12 +149,11 @@ export class Popular extends ComponentBase<{}, PopularState> {
 		};
 	}
 
-	private _updateLanguage(lang: Language) {
+	private async _updateLanguage(lang: Language) {
 		repoStore.updateLanguage(lang);
 
-		fetchPopularRepos(lang).then((repos) => {
-			repoStore.setRepos(repos);
-		});
+		const repos = await fetchPopularRepos(lang);
+		repoStore.setRepos(repos);
 	}
 
 	public componentDidMount() {
